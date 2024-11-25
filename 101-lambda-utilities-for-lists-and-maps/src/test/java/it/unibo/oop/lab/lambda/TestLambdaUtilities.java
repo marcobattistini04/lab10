@@ -67,7 +67,7 @@ final class TestLambdaUtilities {
                 2, Set.of("zx", "cv"),
                 1, Set.of("o")
             ),
-            LambdaUtilities.group(List.of("abc", "qwe", "zx", "o", "cv"), x -> x.length())
+            LambdaUtilities.group(List.of("abc", "qwe", "zx", "o", "cv"), String::length)
         );
     }
 

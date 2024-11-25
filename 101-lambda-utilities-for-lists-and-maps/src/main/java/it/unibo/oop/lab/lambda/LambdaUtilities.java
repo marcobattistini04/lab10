@@ -63,7 +63,7 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Optional.filter
          */
-        List<Optional<T>> listOfOptional = new ArrayList<>();
+        final List<Optional<T>> listOfOptional = new ArrayList<>();
         list.forEach(elem -> listOfOptional.add(Optional.ofNullable(elem).filter(pre)));
         return listOfOptional;
     }
@@ -84,11 +84,11 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Map.merge
          */
-        Map<R, Set<T>> map = new HashMap<>();
+        final Map<R, Set<T>> map = new HashMap<>();
         list.forEach(elem -> map.merge(op.apply(elem), new HashSet<>(Arrays.asList(elem)), (t1, t2) -> {
             t1.addAll(t2);
             return t1;
-            }
+        }
         ));
         return map;
     }
@@ -111,7 +111,7 @@ public final class LambdaUtilities {
          *
          * Keep in mind that a map can be iterated through its forEach method
          */
-        Map<K, V> filledMap = new HashMap<>();
+        final Map<K, V> filledMap = new HashMap<>();
         map.forEach((key, value) -> filledMap.put(key, value.orElse(def.get())));
         return filledMap;
     }
@@ -122,7 +122,7 @@ public final class LambdaUtilities {
      */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void main(final String[] args) {
-        final List<Integer> li = IntStream.range(1, 8).mapToObj(i -> Integer.valueOf(i)).collect(Collectors.toList());
+        final List<Integer> li = IntStream.range(1, 8).mapToObj(Integer::valueOf).collect(Collectors.toList());
         System.out.println(dup(li, x -> x + 100));
         /*
          * [1, 101, 2, 102, 3, 103, 4, 104, 5, 105, 6, 106, 7, 107]
