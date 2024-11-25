@@ -20,11 +20,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.3")
 }
 
-val mainClass: String by project
-
 application {
-    // The following allows to run with: ./gradlew -PmainClass=it.unibo.oop.MyMainClass run
-    mainClass.set(project.properties["mainClass"].toString())
+    val main: String? by project
+    // The following allows to run with: ./gradlew -Pmain=it.unibo.oop.MyMainClass run
+    this.mainClass = main ?: "it.unibo.oop.lab.lambda.LambdaUtilities"
 }
 
 val test by tasks.getting(Test::class) {
