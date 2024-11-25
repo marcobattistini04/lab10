@@ -3,6 +3,8 @@ package it.unibo.mvc;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +21,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
      * @param views
      *            the views to attach
      */
-    public DrawNumberApp(final DrawNumberView... views) 
+    public DrawNumberApp(final String file_name, final DrawNumberView... views) 
     throws FileNotFoundException, 
     IOException{
         /*
@@ -32,7 +34,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
         }
         Configuration.Builder configBuilder = new Configuration.Builder();
         String line;
-        final BufferedReader bf = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("config.yml")));
+        final BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(file_name)));
         line = bf.readLine();
         while (line != null) {
             String [] lineElements = line.split(": ");
@@ -53,6 +55,8 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             }
             line = bf.readLine();
         }
+        bf.close();
+
         Configuration config = configBuilder.build();
         if (config.isConsistent()) {
             this.model = new DrawNumberImpl(config);
@@ -103,6 +107,11 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
     public static void main(final String... args) 
     throws FileNotFoundException,
     IOException {
-        new DrawNumberApp(new DrawNumberViewImpl());
+        final String sep = File.separator;
+        final String file_name = "src" + sep + "main" + sep + "resources" + sep + "config.yml";
+        new DrawNumberApp(file_name, new DrawNumberViewImpl(),
+                            new DrawNumberViewImpl(),
+                            new PrintStreamView(System.out),
+                            new PrintStreamView("output.txt"));
     }
 }
