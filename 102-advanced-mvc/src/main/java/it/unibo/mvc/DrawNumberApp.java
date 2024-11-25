@@ -1,24 +1,27 @@
 package it.unibo.mvc;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  */
 public final class DrawNumberApp implements DrawNumberViewObserver {
-    private static final int MIN = 0;
-    private static final int MAX = 100;
-    private static final int ATTEMPTS = 10;
 
-    private final DrawNumber model;
+    private DrawNumber model;
     private final List<DrawNumberView> views;
+    
 
     /**
      * @param views
      *            the views to attach
      */
-    public DrawNumberApp(final DrawNumberView... views) {
+    public DrawNumberApp(final DrawNumberView... views) 
+    throws FileNotFoundException, 
+    IOException{
         /*
          * Side-effect proof
          */
@@ -27,7 +30,39 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             view.setObserver(this);
             view.start();
         }
-        this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
+        Configuration.Builder configBuilder = new Configuration.Builder();
+        String line;
+        final BufferedReader bf = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("config.yml")));
+        line = bf.readLine();
+        while (line != null) {
+            String [] lineElements = line.split(": ");
+            if (lineElements.length == 2) {
+                int value = Integer.parseInt(lineElements[1]);
+                if (lineElements[0].contains("minimum")) {
+                    configBuilder.setMin(value);
+                } else if (lineElements[0].contains("maximum")) {
+                    configBuilder.setMax(value);
+                } else if (lineElements[0].contains("attempts")) {
+                    configBuilder.setAttempts(value);
+                }
+            } 
+            else {
+                for(final var view : views) {
+                    view.displayError("Cannot understad line: " + line);
+                }
+            }
+            line = bf.readLine();
+        }
+        Configuration config = configBuilder.build();
+        if (config.isConsistent()) {
+            this.model = new DrawNumberImpl(config);
+        } else {
+            for(final var view : views) {
+                view.displayError("Configuration given is not consistent. A default configuration will be setted");
+                this.model = new DrawNumberImpl(new Configuration.Builder().build());
+            }
+        }
+        
     }
 
     @Override
@@ -65,8 +100,9 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
      *            ignored
      * @throws FileNotFoundException 
      */
-    public static void main(final String... args) throws FileNotFoundException {
+    public static void main(final String... args) 
+    throws FileNotFoundException,
+    IOException {
         new DrawNumberApp(new DrawNumberViewImpl());
     }
-
 }
