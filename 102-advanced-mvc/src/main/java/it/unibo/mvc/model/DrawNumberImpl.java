@@ -1,4 +1,4 @@
-package it.unibo.mvc;
+package it.unibo.mvc.model;
 
 import java.util.Random;
 

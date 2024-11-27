@@ -1,4 +1,4 @@
-package it.unibo.mvc;
+package it.unibo.mvc.controller;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,6 +8,14 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+
+import it.unibo.mvc.model.Configuration;
+import it.unibo.mvc.model.DrawNumber;
+import it.unibo.mvc.model.DrawNumberImpl;
+import it.unibo.mvc.model.DrawResult;
+import it.unibo.mvc.view.DrawNumberView;
+import it.unibo.mvc.view.DrawNumberViewImpl;
+import it.unibo.mvc.view.PrintStreamView;
 
 /**
  */
